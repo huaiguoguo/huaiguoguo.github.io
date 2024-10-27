@@ -93,3 +93,86 @@ Hi username! You've successfully authenticated, but GitHub does not provide shel
 4. 测试 SSH 连接，确保配置正确。
 
 通过这些步骤，你就可以生成并使用 SSH 密钥与远程服务进行安全通信。
+
+
+<br>
+<br>
+<br>
+
+# 无密码ssh登录 linux
+
+在 Windows 10 上，默认情况下 `ssh-copy-id` 命令是不可用的，因为它是 Linux 或类 Unix 系统中的一个工具。Windows 10 自带的 OpenSSH 客户端不包含这个工具。如果你在 Windows 上想将本地的 SSH 公钥复制到远程 Linux 服务器（如 CentOS 7）上，可以通过以下几种方式来实现。
+
+### 方法 1：手动复制 SSH 公钥
+
+1. **查看并复制公钥**：
+   打开命令提示符，查看并复制你的公钥内容：
+
+   ```bash
+   type C:\Users\<你的用户名>\.ssh\id_rsa.pub
+   ```
+
+   复制输出的公钥内容。
+
+2. **在虚拟机上手动添加公钥**：
+   使用密码登录到你的 CentOS 7 虚拟机：
+
+   ```bash
+   ssh <用户名>@<虚拟机IP地址>
+   ```
+
+   登录后，创建 `.ssh` 目录并设置权限：
+
+   ```bash
+   mkdir -p ~/.ssh
+   chmod 700 ~/.ssh
+   ```
+
+   然后将你在 Windows 上复制的公钥粘贴到 `authorized_keys` 文件中：
+
+   ```bash
+   echo "<你的公钥内容>" >> ~/.ssh/authorized_keys
+   ```
+
+   最后，设置 `authorized_keys` 文件的权限：
+
+   ```bash
+   chmod 600 ~/.ssh/authorized_keys
+   ```
+
+### 方法 2：通过 `cat` 和 `ssh` 将公钥复制到远程服务器
+
+你可以通过 `ssh` 命令将本地公钥通过 `cat` 命令添加到远程服务器的 `authorized_keys` 文件中。
+
+1. **使用以下命令将本地公钥传送到虚拟机**：
+
+   ```bash
+   type C:\Users\<你的用户名>\.ssh\id_rsa.pub | ssh <用户名>@<虚拟机IP地址> "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys"
+   ```
+
+   这条命令的作用：
+   - `type C:\Users\<你的用户名>\.ssh\id_rsa.pub` 会显示你的公钥内容。
+   - `ssh <用户名>@<虚拟机IP地址>` 通过 SSH 登录到虚拟机。
+   - `mkdir -p ~/.ssh` 会在虚拟机上创建 `.ssh` 目录（如果不存在）。
+   - `cat >> ~/.ssh/authorized_keys` 会将公钥内容追加到 `authorized_keys` 文件中。
+   - `chmod 700 ~/.ssh` 和 `chmod 600 ~/.ssh/authorized_keys` 会设置正确的权限。
+
+### 方法 3：使用第三方工具
+
+如果你不想手动复制，可以在 Windows 上安装一些工具来简化这一过程：
+
+1. **Git Bash**：
+   安装 [Git for Windows](https://gitforwindows.org/)，它包含了一个 Bash 环境和大部分常用的 Unix 工具，包括 `ssh-copy-id`。
+
+   安装完成后，在 Git Bash 中执行以下命令将公钥复制到远程服务器：
+   
+   ```bash
+   ssh-copy-id <用户名>@<虚拟机IP地址>
+   ```
+
+2. **PuTTYgen + PuTTY**：
+   如果你使用的是 PuTTY 作为 SSH 客户端，你可以使用 `PuTTYgen` 生成密钥，并通过 `Pageant` 管理你的 SSH 密钥，也可以通过 `PuTTY` 的终端手动将公钥复制到服务器。
+
+### 总结
+
+由于 Windows 10 没有内置的 `ssh-copy-id` 工具，你可以选择手动复制公钥、使用 `ssh` 和 `cat` 来传输公钥，或者安装 Git Bash 等第三方工具来简化操作。
