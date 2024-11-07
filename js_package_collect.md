@@ -1,0 +1,8 @@
+1. [chalk](https://www.npmjs.com/package/chalk)
+2. [dayjs](https://www.npmjs.com/package/dayjs)
+2. [child_process](https://www.npmjs.com/package/child_process)
+2. [chokidar](https://www.npmjs.com/package/chokidar)
+2. [fast-glob](https://www.npmjs.com/package/fast-glob)
+2. [fs-extra](https://www.npmjs.com/package/fs-extra)
+2. [path](https://www.npmjs.com/package/path)
+2. [fs](https://www.npmjs.com/package/fs)
